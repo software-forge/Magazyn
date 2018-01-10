@@ -13,7 +13,7 @@ namespace Magazyn
             get => tytul;
             set => tytul = value;
         }
-        public List<string> Elementy
+        public List <string> Elementy
         {
             get => elementy;
             set => elementy = value;
@@ -77,7 +77,7 @@ namespace Magazyn
                         break;
                     case ConsoleKey.DownArrow:
                         if (zaznaczony < Elementy.Count - 1)
-                        zaznaczony++;
+                            zaznaczony++;
                         break;
                     case ConsoleKey.Enter:
                         Console.Clear();

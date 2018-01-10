@@ -8,66 +8,63 @@ namespace Magazyn
 {
     class Program
     {
+        // Pokazanie produktu - metoda w klasie Produkt()
+
+        // Zrobić na klasie Menu() - wybór oznacza pokazanie produktu
+        private static void Przegladaj()
+        {
+            
+        }
+
+        // Zrobić własny formularz wyszukiwania - wyniki w Menu() (wybór Menu() oznacza pokazanie produktu)
+        private static void Szukaj()
+        {
+
+        }
+
+        // Zrobić własny formularz dodawania
+        private static void Dodaj()
+        {
+
+        }
+
         static void Main(string[] args)
         {
             // Elementy menu głównego
             List <string> elementyMenu = new List <string>();
-            elementyMenu.Add("Test powiadomienia");
-            elementyMenu.Add("Test zapytania");
-            elementyMenu.Add("Test wprowadzania tekstu");
-            elementyMenu.Add("Ustawienia");
+            elementyMenu.Add("Przeglądaj magazyn");
+            elementyMenu.Add("Szukaj w magazynie");
+            elementyMenu.Add("Dodaj do magazynu");
             elementyMenu.Add("O programie");
-            elementyMenu.Add("Pomoc");
             elementyMenu.Add("Wyjście");
 
-            Menu menuGlowne = new Menu("MENU GŁÓWNE", elementyMenu);
+            Menu menuGlowne = new Menu("MAGAZYN v.1.0", elementyMenu);
 
             // Zapełnienie listy obiektów z xml
 
-            while(true)
+            while (true)
             {
                 int wybor = menuGlowne.Wybor();
-
-                Komunikat k;
 
                 switch(wybor)
                 {
                     case 0:
-                        k = new Komunikat("Komunikat", "Tak wygląda komunikat");
-                        k.Wyswietl();
+                        Przegladaj();
                         break;
                     case 1:
-                        k = new Komunikat("Pytanie", "Kontynuować?", true);
-                        bool odpowiedz = k.Wyswietl("OK", "Anuluj");
-                        Console.WriteLine(odpowiedz);
-                        Console.ReadKey();
+                        
                         break;
                     case 2:
-                        Console.Clear();
-                        Console.WriteLine("Tutaj będzie test wprowadzania danych tekstowych");
-                        Console.ReadKey();
+                        
                         break;
                     case 3:
-                        Console.Clear();
-                        Console.WriteLine("Tutaj będą ustawienia");
-                        Console.ReadKey();
+                        
                         break;
                     case 4:
-                        Console.Clear();
-                        Console.WriteLine("O programie");
-                        Console.ReadKey();
-                        break;
-                    case 5:
-                        Console.Clear();
-                        Console.WriteLine("Pomoc");
-                        Console.ReadKey();
-                        break;
-                    case 6:
+                        // Zapisanie listy obiektów do xml
                         return;
                 }
             }
-
-            // Zapisanie listy obiektów do xml
         }
     }
 }
