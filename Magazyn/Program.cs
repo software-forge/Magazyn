@@ -8,39 +8,20 @@ namespace Magazyn
 {
     class Program
     {
-        // Pokazanie produktu - metoda w klasie Produkt()
-
-        // Zrobić na klasie Menu() - wybór oznacza pokazanie produktu
-        private static void Przegladaj()
-        {
-            
-        }
-
-        // Zrobić własny formularz wyszukiwania - wyniki w Menu() (wybór Menu() oznacza pokazanie produktu)
-        private static void Szukaj()
-        {
-
-        }
-
-        // Zrobić własny formularz dodawania
-        private static void Dodaj()
-        {
-
-        }
-
         static void Main(string[] args)
         {
+            // Zapełnienie listy obiektów z xml
+            Magazyn.Wczytaj();
+
             // Elementy menu głównego
             List <string> elementyMenu = new List <string>();
-            elementyMenu.Add("Przeglądaj magazyn");
-            elementyMenu.Add("Szukaj w magazynie");
-            elementyMenu.Add("Dodaj do magazynu");
+            elementyMenu.Add("Przeglądaj oleje w magazynie");
+            elementyMenu.Add("Dodaj olej do magazynu");
+            elementyMenu.Add("Dobierz olej");
             elementyMenu.Add("O programie");
             elementyMenu.Add("Wyjście");
 
-            Menu menuGlowne = new Menu("MAGAZYN v.1.0", elementyMenu);
-
-            // Zapełnienie listy obiektów z xml
+            Menu menuGlowne = new Menu("OLEJARKA v. 1.0", elementyMenu);
 
             while (true)
             {
@@ -49,19 +30,20 @@ namespace Magazyn
                 switch(wybor)
                 {
                     case 0:
-                        Przegladaj();
+                        Magazyn.Przegladaj();
                         break;
                     case 1:
-                        
+                        Magazyn.Dodaj();
                         break;
                     case 2:
-                        
+                        Magazyn.Dobierz();
                         break;
                     case 3:
-                        
+                        Komunikat k = new Komunikat("OLEJARKA v. 1.0 by Rafał Miller", "Program zaliczeniowy przedmiotu JiPP w WWSI");
+                        k.Wyswietl();
                         break;
                     case 4:
-                        // Zapisanie listy obiektów do xml
+                        Magazyn.Zapisz();
                         return;
                 }
             }
