@@ -34,6 +34,11 @@ namespace Magazyn
         {
             // TODO 2
 
+            Console.Clear();
+            Console.WriteLine("Przeglądanie olejów");
+            Console.ReadKey();
+            Console.Clear();
+
             // 1. Przeglądanie magazynu na klasie Menu
 
             // 2. Wyświetlenie wybranego produktu - metoda Wyswietl() klasy Olej
@@ -45,12 +50,22 @@ namespace Magazyn
         public static void Dodaj()
         {
             // TODO 1
+
+            Console.Clear();
+            Console.WriteLine("Dodawanie nowego oleju");
+            Console.ReadKey();
+            Console.Clear();
         }
 
         // Zrobić własny formularz doboru oleju - wyniki w Menu (wartość zwracana przez metodę Wybor() klasy Menu oznacza pokazanie wybranego oleju)
         public static void Dobierz()
         {
-            
+            // TODO 3
+
+            Console.Clear();
+            Console.WriteLine("Dobieranie oleju wg. podanych wymagań");
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }
