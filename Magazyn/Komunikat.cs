@@ -7,15 +7,30 @@ namespace Magazyn
         private string tytul;
         private string tresc;
         
+        // Tytuł nie może być dłuższy niż 50 znaków
         public string Tytul
         {
             get => tytul;
-            set => tytul = value;
+            set
+            {
+                if (value.Length <= 50)
+                    tytul = value;
+                else
+                    tytul = "";
+            }
         }
+
+        // Treść nie może być dłuższa niż 50 znaków
         public string Tresc
         {
             get => tresc;
-            set => tresc = value;
+            set
+            {
+                if (value.Length <= 50)
+                    tresc = value;
+                else
+                    tresc = "";
+            }
         }
 
         private bool odpowiedz;

@@ -49,6 +49,7 @@
     <Compile Include="Olej2T.cs" />
     <Compile Include="Olej4T.cs" />
     <Compile Include="OlejPrzekladniowy.cs" />
+    <Compile Include="PoleTekstowe.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

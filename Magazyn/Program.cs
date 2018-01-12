@@ -15,13 +15,13 @@ namespace Magazyn
 
             // Elementy menu głównego
             List <string> elementyMenu = new List <string>();
-            elementyMenu.Add("Przeglądaj oleje w magazynie");
-            elementyMenu.Add("Dodaj olej do magazynu");
+            elementyMenu.Add("Przeglądaj oleje w bazie");
+            elementyMenu.Add("Dodaj olej do bazy");
             elementyMenu.Add("Dobierz olej");
             elementyMenu.Add("O programie");
             elementyMenu.Add("Wyjście");
 
-            Menu menuGlowne = new Menu("OLEJARKA v. 1.0", elementyMenu);
+            Menu menuGlowne = new Menu("OLEJARKA v. 1.0 (wyjście - Esc)", elementyMenu);
 
             while (true)
             {
@@ -29,6 +29,9 @@ namespace Magazyn
 
                 switch(wybor)
                 {
+                    case -1:
+                        Magazyn.Zapisz();
+                        return;
                     case 0:
                         Magazyn.Przegladaj();
                         break;

@@ -8,41 +8,39 @@ namespace Magazyn
 {
     abstract class Olej
     {
-        // informacja o typie oleju dostępna przez GetType()
-        
         // Informacje o produkcie
-        string nazwa, producent, kod;   // nazwa produktu, nazwa producenta, kod produktu
-        int regal, segment, polka;      // lokalizacja w magazynie
+        string nazwa, producent; // nazwa produktu, nazwa producenta
 
         // Informacje o stanie magazynowym i cenie
-        int ilosc_jednost;              // ilość jednostek na magazynie
-        decimal poje_jedn;              // pojemność (w litrach) jednej jednostki sprzedaży oleju (butelki, kanistra itp.)
-        decimal cena_jedn;              // cena za jedną jednostkę
+        public int poj_jedn;              // ilość jednostek na magazynie
+        public decimal cena_jedn;              // cena za jedną jednostkę
 
-        // Informacja o przeznaczeniu oleju samochodowy/motocyklowy/inny lub do przekładni manualnej/automatycznej
-        protected int przeznaczenie;
+        // Informacja o przeznaczeniu oleju samochodowy/motocyklowy/inny (silnikowy) lub do przekładni manualnej/automatycznej (przekładniowy)
+        private int przeznaczenie;
 
-        public int Ilosc_jednost
+        // Czy ta hermetyzacja ma sens?
+        public string Nazwa { get => nazwa; set => nazwa = value; }
+        public string Producent { get => producent; set => producent = value; }
+
+        public int Przeznaczenie
         {
-            get => ilosc_jednost;
-            protected set => ilosc_jednost = value; // ???
+            get => przeznaczenie;
+            set => przeznaczenie = value;
         }
 
+        // TODO ??
         public Olej()
         {
 
         }
 
-        public virtual void Pokaz()
+        // Jeżeli nadpisana metoda Pokaz() zwróci true, tzn., że ten olej należy usunąć z bazy
+        public virtual bool Pokaz()
         {
             Console.Clear();
-            Console.WriteLine("Nazwa: " + nazwa);
-            Console.WriteLine("Producent: " + producent);
-            Console.WriteLine("Kod produktu: " + kod);
-            Console.WriteLine("Lokalizacja w magazynie: {0} regał, {1} segment, {2} półka", regal, segment, polka);
-            Console.WriteLine("Dostępnych: {0} sztuk", Ilosc_jednost);
-            Console.WriteLine("Cena: {0} PLN/szt.", cena_jedn);
-            Console.WriteLine("Pojemność opakowania: {0} l", poje_jedn);
+            Console.WriteLine(Producent + " " + Nazwa);
+
+            return false;
         }
     }
 }

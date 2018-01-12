@@ -21,6 +21,12 @@ namespace Magazyn
 
         private int zaznaczony;
 
+        public Menu()
+        {
+            Tytul = "";
+            Elementy = new List <string>();
+        }
+
         public Menu(string tytul, List <string> elementy)
         {
             Tytul = tytul;
@@ -85,6 +91,12 @@ namespace Magazyn
                         Console.SetCursorPosition(0, 0);
                         Console.CursorVisible = true;
                         return zaznaczony;
+                    case ConsoleKey.Escape:
+                        Console.Clear();
+                        Console.ResetColor();
+                        Console.SetCursorPosition(0, 0);
+                        Console.CursorVisible = true;
+                        return -1;
                 }
             }
         }
