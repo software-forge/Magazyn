@@ -8,21 +8,16 @@ namespace Magazyn
 {
     class Olej2T:Olej
     {
+        public Olej2T(int pojemnosc, decimal cena) : base(pojemnosc, cena) {}
 
-        // TODO ??
-        public Olej2T():base()
+        public int Przeznaczenie
         {
-            
-        }
-
-        public new int Przeznaczenie
-        {
-            get => base.Przeznaczenie;
+            get => przeznaczenie;
             set
             {
                 // Wartość musi być z przedziału 0-1
-                if(value >= 0 && value <= 1)
-                    base.Przeznaczenie = value;
+                if(value == 0 || value == 1)
+                    przeznaczenie = value;
             }
         }
 
@@ -30,10 +25,11 @@ namespace Magazyn
         {
             while(true)
             {
-                base.Pokaz();
+                Console.Clear();
+                Console.WriteLine(Producent + " " + Nazwa);
 
                 Console.Write("Przeznaczenie: ");
-                switch (base.Przeznaczenie)
+                switch (Przeznaczenie)
                 {
                     case 0:
                         Console.WriteLine("motocykle/motorowery");
@@ -43,7 +39,8 @@ namespace Magazyn
                         break;
                 }
 
-                Console.WriteLine("Cena: {0} PLN/szt.", cena_jedn);
+                Console.WriteLine("Pojemność opakowania: {0} l", Pojemnosc);
+                Console.WriteLine("Cena: {0} PLN/szt.", Cena);
 
                 Console.WriteLine("Esc - powrót, Spacja - usuń olej z bazy");
 
@@ -54,13 +51,18 @@ namespace Magazyn
                         Console.Clear();
                         return false;
                     case ConsoleKey.Spacebar:
-                        Komunikat k = new Komunikat("CZY NA PEWNO?", "Czy na pewno chcesz usunąć ten olej z bazy?", false);
-                        if (k.Wyswietl("USUŃ", "ANULUJ"))
+
+                        Komunikat k = new Komunikat("CZY NA PEWNO? (anuluj - Esc)", "Czy na pewno chcesz usunąć ten olej z bazy?", false);
+                        int i = k.Wyswietl("USUŃ", "ANULUJ", true);
+
+                        if(i == 0 || i == -1)
                         {
                             Console.Clear();
-                            return true;
+                            return false;
                         }
-                        break;
+
+                        Console.Clear();
+                        return true;
                 }
             }
         }

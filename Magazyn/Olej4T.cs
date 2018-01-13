@@ -28,20 +28,34 @@ namespace Magazyn
             return false;
         }
 
-        // TODO ??
-        public Olej4T():base()
+        public Olej4T(int pojemnosc, decimal cena, int lepkosc_z, int lepkosc_l):base(pojemnosc, cena)
         {
-
+            Lepkosc_zimowa = lepkosc_z;
+            Lepkosc_letnia = lepkosc_l;
         }
 
-        public new int Przeznaczenie
+        public Olej4T(int pojemnosc, decimal cena, int lepkosc, bool zimowy) : base(pojemnosc, cena)
         {
-            get => base.Przeznaczenie;
+            if (zimowy)
+            {
+                Lepkosc_zimowa = lepkosc;
+                Lepkosc_letnia = -1;
+            }
+            else
+            {
+                Lepkosc_letnia = lepkosc;
+                Lepkosc_zimowa = -1;
+            }
+        }
+
+        public int Przeznaczenie
+        {
+            get => przeznaczenie;
             set
             {
                 // Wartość musi być z przedziału 0-2
                 if (value >= 0 && value <= 2)
-                    base.Przeznaczenie = value;
+                    przeznaczenie = value;
             }
         }
 
@@ -52,7 +66,7 @@ namespace Magazyn
             get => lepkosc_zimowa;
             set
             {
-                // Jeżeli przekazywana wartość jest poprawną lepkością zimową oleju dla silnika 4T
+                // Przekazywana wartość musi być poprawną lepkością zimową oleju do silnika 4T
                 if (PoprLepkoscZimowa(value))
                     lepkosc_zimowa = value;
                 else
@@ -65,11 +79,11 @@ namespace Magazyn
             get => lepkosc_letnia;
             set
             {
-                // Jeżeli przekazywana wartość jest poprawną lepkością letnią oleju dla silnika 4T
+                // Przekazywana wartość musi być poprawną lepkością letnią oleju do silnika 4T
                 if (PoprLepkoscLetnia(value))
                     lepkosc_letnia = value;
                 else
-                    lepkosc_letnia = 0;
+                    lepkosc_letnia = -1;
             }
         }
 
@@ -78,35 +92,34 @@ namespace Magazyn
             get => typ;
             set
             {
+                // Wartość musi być z przedziału 0-2
                 if (value >= 0 && value <= 2)
                     typ = value;
             }
         }
 
-        // TODO - sensowna obsługa błędnych wartości
         public string Lepkosc()
         {
-            bool wielosezonowy = false;
-            if (Lepkosc_zimowa >= 0 && Lepkosc_letnia >= 8)
-                wielosezonowy = true;
+            if (Lepkosc_letnia == -1 && Lepkosc_zimowa == -1)
+                return "brak danych";
 
-            if(wielosezonowy)
+            if(Lepkosc_zimowa > -1 && Lepkosc_letnia > -1)
                 return Lepkosc_zimowa + "W-" + Lepkosc_letnia;
             else
             {
-                if(Lepkosc_zimowa >= 0)
+                if(Lepkosc_zimowa > -1)
                     return Lepkosc_zimowa + "W";
                 else
                     return Convert.ToString(Lepkosc_letnia);
             }
-            
         }
 
         public override bool Pokaz()
         {
             while(true)
             {
-                base.Pokaz();
+                Console.Clear();
+                Console.WriteLine(Producent + " " + Nazwa);
 
                 Console.Write("Przeznaczenie: ");
                 switch (Przeznaczenie)
@@ -138,7 +151,8 @@ namespace Magazyn
                         break;
                 }
 
-                Console.WriteLine("Cena: {0} PLN/szt.", cena_jedn);
+                Console.WriteLine("Pojemność opakowania: {0} l", Pojemnosc);
+                Console.WriteLine("Cena: {0} PLN/szt.", Cena);
 
                 Console.WriteLine("Esc - powrót, Spacja - usuń olej z bazy");
                 ConsoleKeyInfo usunac = Console.ReadKey();
@@ -148,13 +162,18 @@ namespace Magazyn
                         Console.Clear();
                         return false;
                     case ConsoleKey.Spacebar:
-                        Komunikat k = new Komunikat("CZY NA PEWNO?", "Czy na pewno chcesz usunąć ten olej z bazy?", false);
-                        if (k.Wyswietl("USUŃ", "ANULUJ"))
+
+                        Komunikat k = new Komunikat("CZY NA PEWNO? (anuluj - Esc)", "Czy na pewno chcesz usunąć ten olej z bazy?", false);
+                        int i = k.Wyswietl("USUŃ", "ANULUJ", true);
+
+                        if (i == 0 || i == -1)
                         {
                             Console.Clear();
-                            return true;
+                            return false;
                         }
-                        break;
+                       
+                        Console.Clear();
+                        return true;
                 }
             }
         }

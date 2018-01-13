@@ -9,38 +9,58 @@ namespace Magazyn
     abstract class Olej
     {
         // Informacje o produkcie
-        string nazwa, producent; // nazwa produktu, nazwa producenta
+        private string nazwa, producent; // nazwa produktu, nazwa producenta
 
         // Informacje o stanie magazynowym i cenie
-        public int poj_jedn;              // ilość jednostek na magazynie
-        public decimal cena_jedn;              // cena za jedną jednostkę
+        private int pojemnosc;             // pojemność jednej jednostki w litrach
+        private decimal cena;        // cena za jedną jednostkę
 
         // Informacja o przeznaczeniu oleju samochodowy/motocyklowy/inny (silnikowy) lub do przekładni manualnej/automatycznej (przekładniowy)
-        private int przeznaczenie;
+        protected int przeznaczenie;
 
-        // Czy ta hermetyzacja ma sens?
-        public string Nazwa { get => nazwa; set => nazwa = value; }
-        public string Producent { get => producent; set => producent = value; }
-
-        public int Przeznaczenie
+        public string Nazwa
         {
-            get => przeznaczenie;
-            set => przeznaczenie = value;
+            get => nazwa;
+            set
+            {
+                if (value.Length < 25)
+                    nazwa = value;
+                else
+                    nazwa = "";
+            }
+
         }
 
-        // TODO ??
-        public Olej()
+        public string Producent
         {
+            get => producent;
+            set
+            {
+                if (value.Length < 25)
+                    producent = value;
+                else
+                    producent = "";
+            }
+        }
 
+        public int Pojemnosc
+        {
+            get => pojemnosc;
+            private set => pojemnosc = value;
+        }
+        public decimal Cena
+        {
+            get => cena;
+            private set => cena = value;
+        }
+
+        public Olej(int pojemnosc, decimal cena)
+        {
+            Pojemnosc = pojemnosc;
+            Cena = cena;
         }
 
         // Jeżeli nadpisana metoda Pokaz() zwróci true, tzn., że ten olej należy usunąć z bazy
-        public virtual bool Pokaz()
-        {
-            Console.Clear();
-            Console.WriteLine(Producent + " " + Nazwa);
-
-            return false;
-        }
+        public abstract bool Pokaz();
     }
 }

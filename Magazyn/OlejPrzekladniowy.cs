@@ -28,19 +28,43 @@ namespace Magazyn
             return false;
         }
 
-        // TODO ??
-        public OlejPrzekladniowy():base()
+        public OlejPrzekladniowy(int pojemnosc, decimal cena) : base(pojemnosc, cena)
         {
-
+            Przeznaczenie = 1;
         }
 
-        public new int Przeznaczenie
+        public OlejPrzekladniowy(int pojemnosc, decimal cena, int lepkosc_z, int lepkosc_l) : base(pojemnosc, cena)
         {
-            get => base.Przeznaczenie;
+            Przeznaczenie = 0;
+
+            Lepkosc_zimowa = lepkosc_z;
+            Lepkosc_letnia = lepkosc_l;
+        }
+
+        public OlejPrzekladniowy(int pojemnosc, decimal cena, int lepkosc, bool zimowy) : base(pojemnosc, cena)
+        {
+            Przeznaczenie = 0;
+
+            if(zimowy)
+            {
+                Lepkosc_zimowa = lepkosc;
+                Lepkosc_letnia = -1;
+            }
+            else
+            {
+                Lepkosc_letnia = lepkosc;
+                Lepkosc_zimowa = -1;
+            }
+        }
+
+        public int Przeznaczenie
+        {
+            get => przeznaczenie;
             set
             {
-                if (value >= 0 && value <= 1)
-                    base.Przeznaczenie = value;
+                // Wartość musi być z przedziału 0-1
+                if (value == 0 || value == 1)
+                    przeznaczenie = value;
             }
         }
 
@@ -52,14 +76,16 @@ namespace Magazyn
             set
             {
                 // Tylko jeśli przeznaczenie = manual (dla olejów do automatów nie rozpatrujemy lepkości)
-                if(base.Przeznaczenie == 0)
+                if(przeznaczenie == 0)
                 {
                     // Jeżeli przekazywana wartość jest poprawną lepkością zimową oleju przekładniowego
                     if (PoprLepkoscZimowa(value))
                         lepkosc_zimowa = value;
                     else
-                        lepkosc_zimowa = 0;
+                        lepkosc_zimowa = -1;
                 }
+                else
+                    lepkosc_zimowa = -1;
             }
         }
 
@@ -69,29 +95,29 @@ namespace Magazyn
             set
             {
                 // Tylko jeśli przeznaczenie = manual (dla olejów do automatów nie rozpatrujemy lepkości)
-                if (base.Przeznaczenie == 0)
+                if (przeznaczenie == 0)
                 {
                     // Jeżeli przekazywana wartość jest poprawną lepkością letnią oleju przekładniowego
                     if (PoprLepkoscLetnia(value))
                         lepkosc_letnia = value;
                     else
-                        lepkosc_letnia = 0;
+                        lepkosc_letnia = -1;
                 }
+                else
+                    lepkosc_letnia = -1;
             }
         }
 
-        // TODO - sensowna obsługa błędnych wartości
         public string Lepkosc()
         {
-            bool wielosezonowy = false;
-            if (Lepkosc_zimowa >= 70 && Lepkosc_letnia >= 80)
-                wielosezonowy = true;
-
-            if (wielosezonowy)
+            if (Lepkosc_letnia == -1 && Lepkosc_zimowa == -1)
+                return "brak danych";
+            
+            if (Lepkosc_zimowa > -1 && Lepkosc_letnia > -1)
                 return Lepkosc_zimowa + "W-" + Lepkosc_letnia;
             else
             {
-                if (Lepkosc_zimowa >= 0)
+                if (Lepkosc_zimowa > -1)
                     return Lepkosc_zimowa + "W";
                 else
                     return Convert.ToString(Lepkosc_letnia);
@@ -102,10 +128,11 @@ namespace Magazyn
         {
             while(true)
             {
-                base.Pokaz();
+                Console.Clear();
+                Console.WriteLine(Producent + " " + Nazwa);
 
                 Console.Write("Przeznaczenie: ");
-                switch (base.Przeznaczenie)
+                switch (Przeznaczenie)
                 {
                     case 0:
                         Console.WriteLine("przekładnie manualne");
@@ -116,7 +143,8 @@ namespace Magazyn
                         break;
                 }
 
-                Console.WriteLine("Cena: {0} PLN/szt.", cena_jedn);
+                Console.WriteLine("Pojemność opakowania: {0} l", Pojemnosc);
+                Console.WriteLine("Cena: {0} PLN/szt.", Cena);
 
                 Console.WriteLine("Esc - powrót, Spacja - usuń olej z bazy");
 
@@ -127,13 +155,18 @@ namespace Magazyn
                         Console.Clear();
                         return false;
                     case ConsoleKey.Spacebar:
-                        Komunikat k = new Komunikat("CZY NA PEWNO?", "Czy na pewno chcesz usunąć ten olej z bazy?", false);
-                        if (k.Wyswietl("USUŃ", "ANULUJ"))
+
+                        Komunikat k = new Komunikat("CZY NA PEWNO? (anuluj - Esc)", "Czy na pewno chcesz usunąć ten olej z bazy?", false);
+                        int i = k.Wyswietl("USUŃ", "ANULUJ", true);
+
+                        if (i == 0 || i == -1)
                         {
                             Console.Clear();
-                            return true;
+                            return false;
                         }
-                        break;
+
+                        Console.Clear();
+                        return true;
                 }
             }
         }
