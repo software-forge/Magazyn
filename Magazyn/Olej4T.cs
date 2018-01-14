@@ -34,7 +34,7 @@ namespace Magazyn
             Lepkosc_letnia = lepkosc_l;
         }
 
-        public Olej4T(int pojemnosc, decimal cena, int lepkosc, bool zimowy) : base(pojemnosc, cena)
+        public Olej4T(int pojemnosc, decimal cena, int lepkosc, bool zimowy):base(pojemnosc, cena)
         {
             if (zimowy)
             {
@@ -48,7 +48,14 @@ namespace Magazyn
             }
         }
 
-        public int Przeznaczenie
+        // TODO
+        ~Olej4T()
+        {
+
+        }
+
+        // Nadpisanie abstrakcyjnej właściwości Przeznaczenie
+        public override int Przeznaczenie
         {
             get => przeznaczenie;
             set
@@ -61,7 +68,7 @@ namespace Magazyn
 
         private int lepkosc_zimowa, lepkosc_letnia, typ;
 
-        public int Lepkosc_zimowa
+        public override int Lepkosc_zimowa
         {
             get => lepkosc_zimowa;
             set
@@ -74,7 +81,7 @@ namespace Magazyn
             }
         }
 
-        public int Lepkosc_letnia
+        public override int Lepkosc_letnia
         {
             get => lepkosc_letnia;
             set
@@ -87,7 +94,7 @@ namespace Magazyn
             }
         }
 
-        public int Typ
+        public override int Typ
         {
             get => typ;
             set
@@ -98,7 +105,8 @@ namespace Magazyn
             }
         }
 
-        public string Lepkosc()
+        // Nadpisanie wirtualnej metody Lepkosc()
+        public override string Lepkosc()
         {
             if (Lepkosc_letnia == -1 && Lepkosc_zimowa == -1)
                 return "brak danych";
@@ -114,6 +122,7 @@ namespace Magazyn
             }
         }
 
+        // Nadpisanie abstrakcyjnej metody Pokaz()
         public override bool Pokaz()
         {
             while(true)

@@ -10,7 +10,14 @@ namespace Magazyn
     {
         public Olej2T(int pojemnosc, decimal cena) : base(pojemnosc, cena) {}
 
-        public int Przeznaczenie
+        // TODO
+        ~Olej2T()
+        {
+            
+        }
+
+        // Nadpisanie abstrakcyjnej właściwości Przeznaczenie
+        public override int Przeznaczenie
         {
             get => przeznaczenie;
             set
@@ -21,6 +28,7 @@ namespace Magazyn
             }
         }
 
+        // Nadpisanie abstrakcyjnej metody Pokaz()
         public override bool Pokaz()
         {
             while(true)

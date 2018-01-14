@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Magazyn
 {
@@ -17,18 +18,195 @@ namespace Magazyn
         }
 
         // Wczytywanie z xml
-        // TODO
         public static void Wczytaj()
         {
             Oleje = new List <Olej>();
 
+            // Dodatkowe ustawienia odczytu
+            XmlReaderSettings s = new XmlReaderSettings();
+
+            XmlReader r = XmlReader.Create("oleje.xml", s);
+
+            while(r.Read())
+            {
+                Olej olej;
+
+                int lepkosc_z;
+                int lepkosc_l;
+
+                if(r.NodeType == XmlNodeType.Element)
+                {
+                    if (r.Name.Equals("olej_2t"))
+                    {
+                        olej = new Olej2T(Convert.ToInt16(r.GetAttribute("pojemnosc")), Convert.ToDecimal(r.GetAttribute("cena")));
+                        olej.Producent = r.GetAttribute("producent");
+                        olej.Nazwa = r.GetAttribute("nazwa");
+
+                        if (r.GetAttribute("przeznaczenie").Equals("motocykle/motorowery"))
+                            olej.Przeznaczenie = 0;
+                        else
+                            olej.Przeznaczenie = 1;
+
+                        oleje.Add(olej);
+                    }
+                    if (r.Name.Equals("olej_4t"))
+                    {
+                        lepkosc_z = Convert.ToInt16(r.GetAttribute("lepkosc_zimowa"));
+                        lepkosc_l = Convert.ToInt16(r.GetAttribute("lepkosc_letnia"));
+
+                        if (lepkosc_z > -1 && lepkosc_l > -1)
+                            olej = new Olej4T(Convert.ToInt16(r.GetAttribute("pojemnosc")), Convert.ToDecimal(r.GetAttribute("cena")), lepkosc_z, lepkosc_l);
+                        else
+                        {
+                            if (lepkosc_z > -1)
+                                olej = new Olej4T(Convert.ToInt16(r.GetAttribute("pojemnosc")), Convert.ToDecimal(r.GetAttribute("cena")), lepkosc_z, true);
+                            else
+                                olej = new Olej4T(Convert.ToInt16(r.GetAttribute("pojemnosc")), Convert.ToDecimal(r.GetAttribute("cena")), lepkosc_l, false);
+                        }
+
+                        olej.Producent = r.GetAttribute("producent");
+                        olej.Nazwa = r.GetAttribute("nazwa");
+
+                        string przeznaczenie = r.GetAttribute("przeznaczenie");
+
+                        if (przeznaczenie.Equals("samochody"))
+                            olej.Przeznaczenie = 0;
+
+                        if (przeznaczenie.Equals("motocykle"))
+                            olej.Przeznaczenie = 1;
+
+                        if(przeznaczenie.Equals("inne"))
+                            olej.Przeznaczenie = 2;
+
+                        string typ = r.GetAttribute("typ");
+
+                        if (typ.Equals("mineralny"))
+                            olej.Typ = 0;
+
+                        if (typ.Equals("półsyntetyczny"))
+                            olej.Typ = 1;
+
+                        if (typ.Equals("syntetyczny"))
+                            olej.Typ = 2;
+
+                        oleje.Add(olej);
+                    }
+                    if (r.Name.Equals("olej_przekladniowy"))
+                    {
+                        lepkosc_z = Convert.ToInt16(r.GetAttribute("lepkosc_zimowa"));
+                        lepkosc_l = Convert.ToInt16(r.GetAttribute("lepkosc_letnia"));
+
+                        if (lepkosc_z > -1 && lepkosc_l > -1)
+                            olej = new OlejPrzekladniowy(Convert.ToInt16(r.GetAttribute("pojemnosc")), Convert.ToDecimal(r.GetAttribute("cena")), lepkosc_z, lepkosc_l);
+                        else
+                        {
+                            if (lepkosc_z > -1)
+                                olej = new OlejPrzekladniowy(Convert.ToInt16(r.GetAttribute("pojemnosc")), Convert.ToDecimal(r.GetAttribute("cena")), lepkosc_z, true);
+                            else
+                                olej = new OlejPrzekladniowy(Convert.ToInt16(r.GetAttribute("pojemnosc")), Convert.ToDecimal(r.GetAttribute("cena")), lepkosc_l, false);
+                        }
+
+                        olej.Producent = r.GetAttribute("producent");
+                        olej.Nazwa = r.GetAttribute("nazwa");
+
+                        string przeznaczenie = r.GetAttribute("przeznaczenie");
+
+                        if (przeznaczenie.Equals("przekładnie manualne"))
+                            olej.Przeznaczenie = 0;
+
+                        if (przeznaczenie.Equals("przekładnie automatyczne"))
+                            olej.Przeznaczenie = 1;
+
+                        oleje.Add(olej);
+                    }
+                }
+            }
+
+            r.Close();
         }
 
         // Zapisywanie do xml
-        // TODO
         public static void Zapisz()
         {
+            XmlWriterSettings s = new XmlWriterSettings();
+            s.Indent = true;
+            s.IndentChars = "\t";
+            s.NewLineOnAttributes = true;
 
+            XmlWriter w = XmlWriter.Create("oleje.xml", s);
+
+            w.WriteStartDocument();
+            w.WriteStartElement("oleje");
+
+            foreach (Olej o in oleje)
+            {
+                if (o.GetType() == typeof(Olej2T))
+                {
+                    w.WriteStartElement("olej_2t");
+                    w.WriteAttributeString("producent", o.Producent);
+                    w.WriteAttributeString("nazwa", o.Nazwa);
+                    w.WriteAttributeString("pojemnosc", Convert.ToString(o.Pojemnosc));
+                    w.WriteAttributeString("cena", Convert.ToString(o.Cena));
+
+                    if(o.Przeznaczenie == 0)
+                        w.WriteAttributeString("przeznaczenie", "motocykle/motorowery");
+                    else
+                        w.WriteAttributeString("przeznaczenie", "inne");
+
+                    w.WriteEndElement();
+                }
+                if (o.GetType() == typeof(Olej4T))
+                {
+                    w.WriteStartElement("olej_4t");
+                    w.WriteAttributeString("producent", o.Producent);
+                    w.WriteAttributeString("nazwa", o.Nazwa);
+                    w.WriteAttributeString("pojemnosc", Convert.ToString(o.Pojemnosc));
+                    w.WriteAttributeString("cena", Convert.ToString(o.Cena));
+
+                    if (o.Przeznaczenie == 0)
+                        w.WriteAttributeString("przeznaczenie", "samochody");
+                    else if (o.Przeznaczenie == 1)
+                        w.WriteAttributeString("przeznaczenie", "motocykle");
+                    else
+                        w.WriteAttributeString("przeznaczenie", "inne");
+
+                    if(o.Typ == 0)
+                        w.WriteAttributeString("typ", "mineralny");
+                    else if(o.Typ == 1)
+                        w.WriteAttributeString("typ", "półsyntetyczny");
+                    else
+                        w.WriteAttributeString("typ", "syntetyczny");
+
+                    w.WriteAttributeString("lepkosc_zimowa", Convert.ToString(o.Lepkosc_zimowa));
+                    w.WriteAttributeString("lepkosc_letnia", Convert.ToString(o.Lepkosc_letnia));
+
+                    w.WriteEndElement();
+                }
+                if (o.GetType() == typeof(OlejPrzekladniowy))
+                {
+                    w.WriteStartElement("olej_przekladniowy");
+                    w.WriteAttributeString("producent", o.Producent);
+                    w.WriteAttributeString("nazwa", o.Nazwa);
+                    w.WriteAttributeString("pojemnosc", Convert.ToString(o.Pojemnosc));
+                    w.WriteAttributeString("cena", Convert.ToString(o.Cena));
+
+                    if (o.Przeznaczenie == 0)
+                    {
+                        w.WriteAttributeString("przeznaczenie", "przekładnie manualne");
+                        w.WriteAttributeString("lepkosc_zimowa", Convert.ToString(o.Lepkosc_zimowa));
+                        w.WriteAttributeString("lepkosc_letnia", Convert.ToString(o.Lepkosc_letnia));
+                    }
+                    else
+                        w.WriteAttributeString("przeznaczenie", "przekładnie automatyczne");
+
+                    w.WriteEndElement();
+                }
+            }
+
+            w.WriteEndElement();
+            w.WriteEndDocument();
+
+            w.Close();
         }
 
         // Przeglądanie olejów wprowadzonych do bazy (jeżeli są)
@@ -320,6 +498,18 @@ namespace Magazyn
             // TODO 3
 
             Console.Clear();
+
+            //foreach (Olej o in oleje)
+            //{
+            //    if (o.GetType() == typeof(Olej2T))
+            //        Console.WriteLine(o.Producent + " " + o.Nazwa + " jest olejem do 2T");
+            //    if (o.GetType() == typeof(Olej4T))
+            //        Console.WriteLine(o.Producent + " " + o.Nazwa + " jest olejem do 4T");
+            //    if (o.GetType() == typeof(OlejPrzekladniowy))
+            //        Console.WriteLine(o.Producent + " " + o.Nazwa + " jest olejem przekładniowym");
+            //}
+
+            
             Console.WriteLine("Dobieranie oleju wg. podanych wymagań");
             Console.ReadKey();
             Console.Clear();

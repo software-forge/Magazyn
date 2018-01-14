@@ -33,7 +33,7 @@ namespace Magazyn
             Przeznaczenie = 1;
         }
 
-        public OlejPrzekladniowy(int pojemnosc, decimal cena, int lepkosc_z, int lepkosc_l) : base(pojemnosc, cena)
+        public OlejPrzekladniowy(int pojemnosc, decimal cena, int lepkosc_z, int lepkosc_l):base(pojemnosc, cena)
         {
             Przeznaczenie = 0;
 
@@ -41,7 +41,7 @@ namespace Magazyn
             Lepkosc_letnia = lepkosc_l;
         }
 
-        public OlejPrzekladniowy(int pojemnosc, decimal cena, int lepkosc, bool zimowy) : base(pojemnosc, cena)
+        public OlejPrzekladniowy(int pojemnosc, decimal cena, int lepkosc, bool zimowy):base(pojemnosc, cena)
         {
             Przeznaczenie = 0;
 
@@ -57,7 +57,14 @@ namespace Magazyn
             }
         }
 
-        public int Przeznaczenie
+        // TODO
+        ~OlejPrzekladniowy()
+        {
+
+        }
+
+        // Nadpisanie abstrakcyjnej właściwości Przeznaczenie
+        public override int Przeznaczenie
         {
             get => przeznaczenie;
             set
@@ -70,7 +77,7 @@ namespace Magazyn
 
         private int lepkosc_zimowa, lepkosc_letnia;
 
-        public int Lepkosc_zimowa
+        public override int Lepkosc_zimowa
         {
             get => lepkosc_zimowa;
             set
@@ -89,7 +96,7 @@ namespace Magazyn
             }
         }
 
-        public int Lepkosc_letnia
+        public override int Lepkosc_letnia
         {
             get => lepkosc_letnia;
             set
@@ -108,22 +115,30 @@ namespace Magazyn
             }
         }
 
-        public string Lepkosc()
+        // Nadpisanie wirtualnej metody Lepkosc()
+        public override string Lepkosc()
         {
-            if (Lepkosc_letnia == -1 && Lepkosc_zimowa == -1)
-                return "brak danych";
-            
-            if (Lepkosc_zimowa > -1 && Lepkosc_letnia > -1)
-                return Lepkosc_zimowa + "W-" + Lepkosc_letnia;
-            else
+            if (Przeznaczenie == 0)
             {
-                if (Lepkosc_zimowa > -1)
-                    return Lepkosc_zimowa + "W";
+                if (Lepkosc_letnia == -1 && Lepkosc_zimowa == -1)
+                    return "brak danych";
+
+                if (Lepkosc_zimowa > -1 && Lepkosc_letnia > -1)
+                    return Lepkosc_zimowa + "W-" + Lepkosc_letnia;
                 else
-                    return Convert.ToString(Lepkosc_letnia);
+                {
+                    if (Lepkosc_zimowa > -1)
+                        return Lepkosc_zimowa + "W";
+                    else
+                        return Convert.ToString(Lepkosc_letnia);
+                }
             }
+            else
+                return "";
+            
         }
 
+        // Nadpisanie abstrakcyjnej metody Pokaz()
         public override bool Pokaz()
         {
             while(true)

@@ -30,6 +30,7 @@ namespace Magazyn
                 switch(wybor)
                 {
                     case -1:
+                        // Zapisanie listy obiektów do xml
                         Magazyn.Zapisz();
                         return;
                     case 0:
@@ -46,6 +47,7 @@ namespace Magazyn
                         k.Wyswietl();
                         break;
                     case 4:
+                        // Zapisanie listy obiektów do xml
                         Magazyn.Zapisz();
                         return;
                 }

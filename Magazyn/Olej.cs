@@ -15,8 +15,46 @@ namespace Magazyn
         private int pojemnosc;             // pojemność jednej jednostki w litrach
         private decimal cena;        // cena za jedną jednostkę
 
-        // Informacja o przeznaczeniu oleju samochodowy/motocyklowy/inny (silnikowy) lub do przekładni manualnej/automatycznej (przekładniowy)
+        // Informacja o przeznaczeniu oleju przyjmuje wartości z różnych przedziałów dla olejów silnikowych 2t i 4t oraz przekładniowych
         protected int przeznaczenie;
+
+        // Przykład właściwości abstrakcyjnej
+        public abstract int Przeznaczenie
+        {
+            get;
+            set;
+        }
+
+        // **** Przykłady właściwości wirtualnych: ****
+
+        // Tylko olej4T implementuje tą właściwość (mineralny/półsyntetyczny/syntetyczny) (ew. przekładniowy manualny też może)
+        public virtual int Typ
+        {
+            get;
+            set;
+        }
+
+        // Dla olejów silnikowych i przekładniowych, klasy lepkości zimowych są różne (przyjmują wartości z różnych zbiorów)
+        public virtual int Lepkosc_zimowa
+        {
+            get;
+            set;
+        }
+
+        // Dla olejów silnikowych i przekładniowych, klasy lepkości letnich są różne (przyjmują wartości z różnych zbiorów)
+        public virtual int Lepkosc_letnia
+        {
+            get;
+            set;
+        }
+
+        // ********************************************
+
+        // Przykład metody wirtualnej
+        public virtual string Lepkosc()
+        {
+            return "";
+        }
 
         public string Nazwa
         {
@@ -60,7 +98,7 @@ namespace Magazyn
             Cena = cena;
         }
 
-        // Jeżeli nadpisana metoda Pokaz() zwróci true, tzn., że ten olej należy usunąć z bazy
+        // Przykład metody abstrakcyjnej, jeżeli zwróci true - usunąć olej z bazy
         public abstract bool Pokaz();
     }
 }
