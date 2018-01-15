@@ -8,13 +8,8 @@ namespace Magazyn
 {
     class Olej2T:Olej
     {
+        // Wywołanie konstruktora bazowego (czy trzeba w ten sposób?)
         public Olej2T(int pojemnosc, decimal cena) : base(pojemnosc, cena) {}
-
-        // TODO
-        ~Olej2T()
-        {
-            
-        }
 
         // Nadpisanie abstrakcyjnej właściwości Przeznaczenie
         public override int Przeznaczenie
@@ -29,12 +24,11 @@ namespace Magazyn
         }
 
         // Nadpisanie abstrakcyjnej metody Pokaz()
-        public override bool Pokaz()
+        public override void Pokaz()
         {
-            while(true)
-            {
                 Console.Clear();
-                Console.WriteLine(Producent + " " + Nazwa);
+
+                Console.WriteLine((Producent + " " + Nazwa).PadRight(50));
 
                 Console.Write("Przeznaczenie: ");
                 switch (Przeznaczenie)
@@ -46,33 +40,9 @@ namespace Magazyn
                         Console.WriteLine("inne");
                         break;
                 }
-
-                Console.WriteLine("Pojemność opakowania: {0} l", Pojemnosc);
-                Console.WriteLine("Cena: {0} PLN/szt.", Cena);
-
-                Console.WriteLine("Esc - powrót, Spacja - usuń olej z bazy");
-
-                ConsoleKeyInfo usunac = Console.ReadKey();
-                switch (usunac.Key)
-                {
-                    case ConsoleKey.Escape:
-                        Console.Clear();
-                        return false;
-                    case ConsoleKey.Spacebar:
-
-                        Komunikat k = new Komunikat("CZY NA PEWNO? (anuluj - Esc)", "Czy na pewno chcesz usunąć ten olej z bazy?", false);
-                        int i = k.Wyswietl("USUŃ", "ANULUJ", true);
-
-                        if(i == 0 || i == -1)
-                        {
-                            Console.Clear();
-                            return false;
-                        }
-
-                        Console.Clear();
-                        return true;
-                }
-            }
+                
+                Console.WriteLine("Pojemność opakowania: {0} L", Convert.ToString(Pojemnosc));
+                Console.WriteLine("Cena: {0} PLN/szt.", Convert.ToString(Cena));
         }
     }
 }

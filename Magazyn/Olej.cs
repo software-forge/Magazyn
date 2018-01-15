@@ -92,13 +92,54 @@ namespace Magazyn
             private set => cena = value;
         }
 
+        // Konstruktor bazowy
         public Olej(int pojemnosc, decimal cena)
         {
             Pojemnosc = pojemnosc;
             Cena = cena;
         }
 
-        // Przykład metody abstrakcyjnej, jeżeli zwróci true - usunąć olej z bazy
-        public abstract bool Pokaz();
+        // Przykład metody abstrakcyjnej
+        public abstract void Pokaz();
+
+        // Wyświetla dane wybranego oleju i czeka na wciśnięcie dowolnego klawisza
+        public void Prezentuj()
+        {
+            Pokaz();
+            Console.WriteLine("Aby powrócić, naciśnij dowolny klawisz...");
+            Console.ReadKey();
+        }
+
+        // Wyświetla dane wybranego oleju i czeka na wybór usunąć/powrót
+        public bool Usunac()
+        {
+            Pokaz();
+
+            Console.WriteLine("Esc - powrót, Spacja - usuń olej z bazy");
+
+            while (true)
+            {
+                ConsoleKeyInfo usunac = Console.ReadKey();
+                switch (usunac.Key)
+                {
+                    case ConsoleKey.Escape:
+                        Console.Clear();
+                        return false;
+                    case ConsoleKey.Spacebar:
+
+                        Komunikat k = new Komunikat("CZY NA PEWNO? (anuluj - Esc)", "Czy na pewno chcesz usunąć ten olej z bazy?", false);
+                        int i = k.Wyswietl("USUŃ", "ANULUJ", true);
+
+                        if (i == 0 || i == -1)
+                        {
+                            Console.Clear();
+                            return false;
+                        }
+
+                        Console.Clear();
+                        return true;
+                }
+            }
+        }
     }
 }

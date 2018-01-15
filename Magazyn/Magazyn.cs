@@ -235,7 +235,7 @@ namespace Magazyn
                         break;
                     else
                     {
-                        if (oleje[wybor].Pokaz())
+                        if (oleje[wybor].Usunac())
                             oleje.RemoveAt(wybor);
                     }
                 }
@@ -491,28 +491,179 @@ namespace Magazyn
             }
         }
 
-        // Zrobić własny formularz doboru oleju - wyniki w Menu (wartość zwracana przez metodę Wybor() klasy Menu oznacza pokazanie wybranego oleju)
-        // TODO - pod koniec, jak starczy czasu
+        // Dobór oleju wg. podanego przeznaczenia, parametrów i maksymalnej ceny
         public static void Dobierz()
         {
-            // TODO 3
+            List<Olej> dobrane = new List<Olej>();
 
-            Console.Clear();
+            Komunikat k = new Komunikat("DOBÓR OLEJU (anuluj - Esc)", "Wybierz rodzaj oleju");
+            int odpowiedz = k.Wyswietl("SILNIKOWY", "PRZEKŁADNIOWY", true);
 
-            //foreach (Olej o in oleje)
-            //{
-            //    if (o.GetType() == typeof(Olej2T))
-            //        Console.WriteLine(o.Producent + " " + o.Nazwa + " jest olejem do 2T");
-            //    if (o.GetType() == typeof(Olej4T))
-            //        Console.WriteLine(o.Producent + " " + o.Nazwa + " jest olejem do 4T");
-            //    if (o.GetType() == typeof(OlejPrzekladniowy))
-            //        Console.WriteLine(o.Producent + " " + o.Nazwa + " jest olejem przekładniowym");
-            //}
+            PoleTekstowe p = new PoleTekstowe("Cena maksymalna");
 
+            if (odpowiedz == -1)
+                return;
+
+            if(odpowiedz == 1)
+            {
+                // Dobór oleju silnikowego
+
+                Menu m = new Menu();
+                List<string> l = new List<string>();
+                
+
+                // 1. Przeznaczenie
+                l.Add("Samochody");
+                l.Add("Motocykle");
+                l.Add("Inne");
+
+                m.Tytul = "PRZEZNACZENIE (anuluj - Esc)";
+                m.Elementy = l;
+
+                int przeznaczenie = m.Wybor();
+
+                l.Clear();
+
+                if (przeznaczenie == -1)
+                    return;
+
+                if(przeznaczenie == 0)
+                {
+                    // Samochodowe, więc tylko 4T
+
+                    // 2. minerał/półsyntetyk/syntetyk
+                    l.Add("Mineralny");
+                    l.Add("Półsyntetyczny");
+                    l.Add("Syntetyczny");
+
+                    m.Tytul = "TYP (anuluj - Esc)";
+                    m.Elementy = l;
+
+                    int typ = m.Wybor();
+
+                    l.Clear();
+
+                    if (typ == -1)
+                        return;
+
+                    // 3. cena maksymalna
+                    decimal cena = p.WprowadzDecimala();
+
+                    // przeszukanie listy
+                    foreach (Olej o in oleje)
+                        if ((o.GetType() == typeof(Olej4T)) && (o.Przeznaczenie == 0) && (o.Typ == typ) && (o.Cena <= cena))
+                            dobrane.Add(o);
+                }
+
+                if(przeznaczenie == 1)
+                {
+                    // Motocyklowe, więc 4T i 2T
+
+                    // 2. dwusuw/czterosuw
+                    k.Tresc = "Wybierz typ silnika";
+                    int silnik = k.Wyswietl("Czterosuw", "Dwusuw", true);
+
+                    if (silnik == -1)
+                        return;
+
+                    // 3. cena maksymalna
+                    decimal cena = p.WprowadzDecimala();
+
+                    // przeszukanie listy
+                    if(silnik == 1)
+                    {
+                        // Czterosuwy
+                        foreach (Olej o in oleje)
+                            if ((o.GetType() == typeof(Olej4T)) && (o.Przeznaczenie == 1) && (o.Cena <= cena))
+                                dobrane.Add(o);
+                    }
+
+                    if(silnik == 0)
+                    {
+                        // Dwusuwy
+                        foreach (Olej o in oleje)
+                            if ((o.GetType() == typeof(Olej2T)) && (o.Przeznaczenie == 1) && (o.Cena <= cena))
+                                dobrane.Add(o);
+                    }
+                }
+
+                if (przeznaczenie == 2)
+                {
+                    // Inne (wszystkie 2T i 4T)
+
+                    decimal cena = p.WprowadzDecimala();
+
+                    // przeszukanie listy
+                    foreach (Olej o in oleje)
+                    {
+                        if ((o.GetType() == typeof(Olej4T)) && (o.Przeznaczenie == 2) && (o.Cena <= cena))
+                            dobrane.Add(o);
+                        if ((o.GetType() == typeof(Olej2T)) && (o.Przeznaczenie == 1) && (o.Cena <= cena))
+                            dobrane.Add(o);
+                    }
+                }
+            }
+            else
+            {
+                // Dobór oleju przekładniowego
+
+                k.Tresc = "Wybierz typ przekładni";
+                odpowiedz = k.Wyswietl("MANUALNA", "AUTOMATYCZNA", true);
+
+                if (odpowiedz == -1)
+                    return;
+
+                decimal cena = p.WprowadzDecimala();
+
+                if (odpowiedz == 1)
+                {
+                    // Dobór oleju do skrzyni manualnej
+
+                    foreach (Olej o in oleje)
+                        if ((o.GetType() == typeof(OlejPrzekladniowy)) && (o.Przeznaczenie == 0) && (o.Cena <= cena))
+                            dobrane.Add(o);
+                }
+                else
+                {
+                    // Dobór oleju do skrzyni automatycznej
+
+                    foreach (Olej o in oleje)
+                        if ((o.GetType() == typeof(OlejPrzekladniowy)) && (o.Przeznaczenie == 1) && (o.Cena <= cena))
+                            dobrane.Add(o);
+                }
+            }
+
+            // Prezentacja wyników:
+            List<string> nazwy_wynikow = new List<string>();
+            foreach(Olej o in dobrane)
+            {
+                string nazwa = o.Producent + " " + o.Nazwa;
+                nazwy_wynikow.Add(nazwa);
+            }
+            nazwy_wynikow.Add("Powrót");
+
+            Menu wyniki = new Menu("WYNIKI (powrót - Esc)", nazwy_wynikow);
+
+            // Komunikat, jeżeli nie znaleziono olejów o zadanych kryteriach
+            if(dobrane.Count == 0)
+            {
+                k.Tytul = "DOBÓR OLEJU";
+                k.Tresc = "Nie znaleziono olejów o podanych kryteriach";
+                k.Wyswietl();
+                return;
+            }
             
-            Console.WriteLine("Dobieranie oleju wg. podanych wymagań");
-            Console.ReadKey();
-            Console.Clear();
+            // Wyświetlenie wyszukanych olejów w Menu
+            while(true)
+            {
+                int  wybrany = wyniki.Wybor();
+
+                if (wybrany == -1 || wybrany == (nazwy_wynikow.Count - 1))
+                    break;
+
+                // Tą metodę trzeba przeciążyć
+                dobrane[wybrany].Prezentuj();
+            }
         }
     }
 }

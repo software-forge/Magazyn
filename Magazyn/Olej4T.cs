@@ -28,11 +28,14 @@ namespace Magazyn
             return false;
         }
 
+        // ***** Przeciążone konstruktory, każdy wywołuje konstruktor bazowy *****
+        
         public Olej4T(int pojemnosc, decimal cena, int lepkosc_z, int lepkosc_l):base(pojemnosc, cena)
         {
             Lepkosc_zimowa = lepkosc_z;
             Lepkosc_letnia = lepkosc_l;
         }
+
 
         public Olej4T(int pojemnosc, decimal cena, int lepkosc, bool zimowy):base(pojemnosc, cena)
         {
@@ -48,11 +51,7 @@ namespace Magazyn
             }
         }
 
-        // TODO
-        ~Olej4T()
-        {
-
-        }
+        // ************************************************************************
 
         // Nadpisanie abstrakcyjnej właściwości Przeznaczenie
         public override int Przeznaczenie
@@ -123,10 +122,8 @@ namespace Magazyn
         }
 
         // Nadpisanie abstrakcyjnej metody Pokaz()
-        public override bool Pokaz()
+        public override void Pokaz()
         {
-            while(true)
-            {
                 Console.Clear();
                 Console.WriteLine(Producent + " " + Nazwa);
 
@@ -162,29 +159,6 @@ namespace Magazyn
 
                 Console.WriteLine("Pojemność opakowania: {0} l", Pojemnosc);
                 Console.WriteLine("Cena: {0} PLN/szt.", Cena);
-
-                Console.WriteLine("Esc - powrót, Spacja - usuń olej z bazy");
-                ConsoleKeyInfo usunac = Console.ReadKey();
-                switch (usunac.Key)
-                {
-                    case ConsoleKey.Escape:
-                        Console.Clear();
-                        return false;
-                    case ConsoleKey.Spacebar:
-
-                        Komunikat k = new Komunikat("CZY NA PEWNO? (anuluj - Esc)", "Czy na pewno chcesz usunąć ten olej z bazy?", false);
-                        int i = k.Wyswietl("USUŃ", "ANULUJ", true);
-
-                        if (i == 0 || i == -1)
-                        {
-                            Console.Clear();
-                            return false;
-                        }
-                       
-                        Console.Clear();
-                        return true;
-                }
-            }
         }
     }
 }
